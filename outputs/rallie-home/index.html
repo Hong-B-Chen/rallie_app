@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Rallie | Tennis Court Availability</title>
+    <meta
+      name="description"
+      content="Rallie helps tennis players know if public courts are worth heading to before they leave."
+    />
+    <link rel="preload" href="assets/rallie-courts-hero.png" as="image" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="nav">
+      <a class="brand" href="#home" aria-label="Rallie home">
+        <span class="ball" aria-hidden="true"></span>
+        <span>Rallie</span>
+      </a>
+      <nav aria-label="Main navigation">
+        <a href="#why">Why Rallie</a>
+        <a href="#join">Join</a>
+      </nav>
+    </header>
+
+    <main id="home">
+      <section class="hero">
+        <div class="hero-copy">
+          <p class="kicker">Tennis court availability, made simple</p>
+          <h1>Know before you go.</h1>
+          <p class="lede">
+            Rallie helps players check whether public tennis courts are busy,
+            how many groups are waiting, and whether it is worth heading over.
+          </p>
+          <div class="actions">
+            <a class="primary" href="#join">Get early access</a>
+            <a class="secondary" href="#why">How it works</a>
+          </div>
+        </div>
+
+        <div class="hero-card" aria-label="Rallie preview">
+          <img src="assets/rallie-courts-hero.png" alt="Public tennis courts at golden hour" />
+          <div class="signal-card">
+            <div>
+              <span>Nearby court</span>
+              <strong id="previewCourt">Court from QR code</strong>
+            </div>
+            <div class="signal-grid">
+              <p><strong>2</strong><span>groups waiting</span></p>
+              <p><strong>4m</strong><span>fresh report</span></p>
+              <p><strong>0/6</strong><span>courts open</span></p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="strip" id="why" aria-label="How Rallie works">
+        <article>
+          <span>01</span>
+          <h2>Check before leaving</h2>
+          <p>Open Rallie to see the latest signal from players already at the court.</p>
+        </article>
+        <article>
+          <span>02</span>
+          <h2>See the wait</h2>
+          <p>Rallie focuses on how many groups are waiting, not just whether courts look busy.</p>
+        </article>
+        <article>
+          <span>03</span>
+          <h2>Help the next player</h2>
+          <p>If you are at the court, a quick report keeps the signal fresh for everyone nearby.</p>
+        </article>
+      </section>
+
+      <section class="join" id="join">
+        <div class="join-copy">
+          <p class="kicker">Early access</p>
+          <h2>Want Rallie at this court?</h2>
+          <p>
+            Join the early list. We will keep your signup tied to the court
+            where you found this page.
+          </p>
+        </div>
+
+        <form id="leadForm" class="form">
+          <input type="hidden" id="sourceUrl" name="sourceUrl" />
+          <input type="hidden" name="preferences" value="early_access" />
+
+          <div class="form-step active" data-step="1">
+            <div class="step-label">Step 1 of 2</div>
+            <label>
+              <span>Name <em>*</em></span>
+              <input name="name" autocomplete="name" required placeholder="Alex Kim" />
+            </label>
+
+            <label>
+              <span>Email <em>*</em></span>
+              <input name="email" type="email" autocomplete="email" required placeholder="alex@example.com" />
+            </label>
+
+            <p class="fine-print">
+              * Required. We will use this to invite you when Rallie opens near
+              your court.
+            </p>
+
+            <button type="button" id="continueButton">Continue</button>
+          </div>
+
+          <div class="form-step" data-step="2">
+            <div class="step-label">Step 2 of 2</div>
+            <h3>Want the early invite first?</h3>
+            <p class="step-copy">
+              Add your phone number and we can send a quick early access invite
+              when Rallie is ready for this court.
+            </p>
+
+            <label>
+              <span>Phone</span>
+              <input
+                name="phone"
+                type="tel"
+                autocomplete="tel"
+                placeholder="(555) 123-4567"
+                data-phone-field
+              />
+            </label>
+
+            <label class="check consent">
+              <input type="checkbox" name="smsConsent" />
+              <span>Text me an early access invite when Rallie is ready.</span>
+            </label>
+
+            <div class="form-actions">
+              <button type="submit">Get early access</button>
+              <button class="ghost-button" type="button" id="skipPhoneButton">Skip for now</button>
+            </div>
+
+            <p class="fine-print">
+              By joining, you agree to receive Rallie updates. You can
+              unsubscribe anytime. No phone? Use Skip for now.
+            </p>
+          </div>
+          <div class="form-step success-step" data-step="success">
+            <div class="reserved-badge" aria-hidden="true">Reservation held</div>
+            <h3>Your Rallie reservation is on the board.</h3>
+            <p class="step-copy">
+              We tucked an early access invite under your name. When Rallie
+              opens for this court, you will be one of the first to know.
+            </p>
+            <button type="button" id="anotherReservationButton">Add another reservation</button>
+          </div>
+          <p class="message" id="message" role="status" aria-live="polite"></p>
+        </form>
+      </section>
+    </main>
+
+    <footer>
+      <span>Rallie</span>
+      <span>Wished you knew before coming? Help the next person.</span>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>
