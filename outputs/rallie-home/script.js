@@ -91,6 +91,7 @@ async function submitLead({ requirePhone } = { requirePhone: true }) {
     name: String(formData.get("name")).trim(),
     email: String(formData.get("email")).trim(),
     phone: String(formData.get("phone")).trim(),
+    courtLocation: String(formData.get("courtLocation")).trim(),
     preferences: formData.getAll("preferences"),
     smsConsent: formData.get("smsConsent") === "on",
     sourceUrl: window.location.href,

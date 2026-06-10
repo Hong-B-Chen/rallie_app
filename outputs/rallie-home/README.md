@@ -13,6 +13,7 @@ The form captures:
 - name
 - email
 - phone
+- court/location
 - preferences
 - consent
 - sourceUrl
@@ -63,3 +64,4 @@ The Google Sheet will receive these columns:
 - Preferences
 - Source URL
 - Submitted At
+- Court / Location

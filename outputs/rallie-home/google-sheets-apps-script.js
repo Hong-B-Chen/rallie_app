@@ -8,6 +8,7 @@ const HEADERS = [
   "Preferences",
   "Source URL",
   "Submitted At",
+  "Court / Location",
 ];
 
 function doPost(event) {
@@ -24,6 +25,7 @@ function doPost(event) {
     Array.isArray(payload.preferences) ? payload.preferences.join(", ") : "",
     payload.sourceUrl || "",
     submittedAt,
+    payload.courtLocation || "",
   ]);
 
   return ContentService.createTextOutput(
