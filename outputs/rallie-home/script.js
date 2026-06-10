@@ -7,7 +7,7 @@ const courtName = (
   params.get("courtName") ||
   params.get("location") ||
   params.get("c") ||
-  "Unknown court"
+  "Bayside Court"
 ).trim();
 
 document.querySelector("#previewCourt").textContent = courtName;

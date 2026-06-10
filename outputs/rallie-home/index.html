@@ -9,12 +9,14 @@
       content="Rallie helps tennis players know if public courts are worth heading to before they leave."
     />
     <link rel="preload" href="assets/rallie-courts-hero.png" as="image" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
     <header class="nav">
       <a class="brand" href="#home" aria-label="Rallie home">
-        <span class="ball" aria-hidden="true"></span>
         <span>Rallie</span>
       </a>
       <nav aria-label="Main navigation">
@@ -43,7 +45,7 @@
           <div class="signal-card">
             <div>
               <span>Nearby court</span>
-              <strong id="previewCourt">Court from QR code</strong>
+              <strong id="previewCourt">Bayside Court</strong>
             </div>
             <div class="signal-grid">
               <p><strong>2</strong><span>groups waiting</span></p>
@@ -75,7 +77,7 @@
       <section class="join" id="join">
         <div class="join-copy">
           <p class="kicker">Early access</p>
-          <h2>Want Rallie at this court?</h2>
+          <h2>Want Rallie <span style="white-space:nowrap">at this court?</span></h2>
           <p>
             Join the early list. We will keep your signup tied to the court
             where you found this page.
@@ -155,7 +157,7 @@
     </main>
 
     <footer>
-      <span>Rallie</span>
+      <span>© 2026 Rallie</span>
       <span>Wished you knew before coming? Help the next person.</span>
     </footer>
 
