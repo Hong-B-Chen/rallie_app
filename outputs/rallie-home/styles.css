@@ -4,7 +4,7 @@
   --muted: #6b6b6b;
   --green: #5a7a00;
   --mint: #f0f7d4;
-  --lime: #c5e840;
+  --lime: #cbf227;
   --cream: #f8f9ff;
   --line: #e0e0e0;
   --white: #ffffff;
@@ -144,7 +144,7 @@ button {
 button {
   border: 0;
   background: var(--lime);
-  color: var(--olive-dark);
+  color: #000000;
   cursor: pointer;
 }
 
