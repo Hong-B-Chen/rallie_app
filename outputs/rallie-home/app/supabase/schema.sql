@@ -10,6 +10,15 @@ create table if not exists public.court_reports (
   created_at timestamptz not null default now()
 );
 
+alter table public.court_reports
+drop constraint if exists court_reports_queue_consistency_check;
+
+alter table public.court_reports
+add constraint court_reports_queue_consistency_check check (
+  (open_courts > 0 and waiting_parties = 0)
+  or (open_courts = 0 and waiting_parties >= 1)
+);
+
 alter table public.court_reports enable row level security;
 
 drop policy if exists "Public can read court reports" on public.court_reports;

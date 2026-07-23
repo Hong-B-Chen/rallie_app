@@ -41,10 +41,33 @@ export function applyReportsToCourt(courts, courtId, reports) {
   return nextCourt;
 }
 
+export function applyInsertedReportToCourt(courts, courtId, row) {
+  const index = courts.findIndex((court) => court.id === courtId);
+  if (index < 0) return null;
+
+  const insertedReport = normalizeReport({ ...row, court_id: row?.court_id || courtId });
+  const existingReports = courts[index].reports || [];
+  const reports = [
+    insertedReport,
+    ...existingReports.filter((report) => report.id !== insertedReport.id),
+  ].sort((a, b) => b.time - a.time);
+  const nextCourt = {
+    ...courts[index],
+    reports,
+    open: insertedReport.openCourts,
+    queue: insertedReport.waitingParties,
+    status: insertedReport.openCourts === 0 ? "BUSY" : "LIVE",
+  };
+
+  courts[index] = nextCourt;
+  return nextCourt;
+}
+
 export function normalizeReport(row) {
   const createdAt = Date.parse(row.created_at);
   const openCourts = Math.max(0, Number(row.open_courts) || 0);
-  const waitingParties = Math.max(0, Number(row.waiting_parties) || 0);
+  const reportedWaitingParties = Math.max(0, Number(row.waiting_parties) || 0);
+  const waitingParties = openCourts > 0 ? 0 : Math.max(1, reportedWaitingParties);
 
   return {
     id: row.id,

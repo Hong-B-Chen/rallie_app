@@ -1,11 +1,17 @@
 import { removeCourtId, saveCourtId } from "./storage/savedCourts.js";
-import { applyReportsToCourt } from "./lib/reportModels.js";
+import { applyInsertedReportToCourt } from "./lib/reportModels.js";
+import { rememberRecentCourt, rememberReporterName } from "./storage/userPreferences.js";
 
 export async function handleAction({ action, target, state, courts, render, reportApi }) {
   // This keeps UI events in one place so page modules stay mostly presentational.
   if (action === "home") state.screen = "home";
 
   if (action === "court-detail") state.screen = "detail";
+
+  if (action === "report-name") {
+    state.reportStep = "name";
+    state.screen = "report";
+  }
 
   if (action === "back-to-submitted-court") {
     state.submitted = true;
@@ -18,6 +24,22 @@ export async function handleAction({ action, target, state, courts, render, repo
 
   if (action === "search-court") {
     // Handled by the input event listener in app.js (no re-render needed)
+    return;
+  }
+
+  if (action === "clear-search") {
+    state.courtSearchQuery = "";
+    state.courtLookupMessage = "";
+    state.screen = "home";
+  }
+
+  if (action === "share-court" && state.court) {
+    await shareCourt({ state, render });
+    return;
+  }
+
+  if (action === "copy-address" && state.court) {
+    await copyCourtAddress({ target, state, render });
     return;
   }
 
@@ -86,6 +108,7 @@ export async function handleAction({ action, target, state, courts, render, repo
     const direction = Number(target.dataset.direction);
     state.openCourts = Math.max(0, Math.min(state.court.total, state.openCourts + direction));
     state.reportMode = state.openCourts === 0 ? "occupied" : "open";
+    state.waitingParties = state.openCourts > 0 ? 0 : Math.max(1, state.waitingParties);
   }
 
   if (action === "submit-report") {
@@ -161,6 +184,7 @@ function saveReporterName({ target, state, render }) {
   }
 
   state.reporterName = reporterName;
+  rememberReporterName(reporterName);
   state.reporterNameMessage = "";
   state.reportStep = "details";
   state.screen = "report";
@@ -179,22 +203,21 @@ async function submitReport({ state, courts, reportApi, render }) {
   render();
 
   try {
-    await reportApi.insertPublicReport({
+    const insertedReport = await reportApi.insertPublicReport({
       courtId: court.id,
       reporterName: state.reporterName || "You",
       openCourts: state.openCourts,
-      waitingParties: state.waitingParties,
+      waitingParties: state.openCourts > 0 ? 0 : Math.max(1, state.waitingParties),
       arrivalStatus: state.arrival,
       gpsValidated: state.gpsTrusted,
       gpsDistanceMiles: state.gpsDistanceMiles,
     });
 
-    const reports = await reportApi.fetchPublicReportsForCourt(court.id);
-    const nextCourt = applyReportsToCourt(courts, court.id, reports);
+    const nextCourt = applyInsertedReportToCourt(courts, court.id, insertedReport);
     state.court = nextCourt || {
       ...court,
       open: state.openCourts,
-      queue: state.waitingParties,
+      queue: state.openCourts > 0 ? 0 : Math.max(1, state.waitingParties),
       status: state.openCourts === 0 ? "BUSY" : "LIVE",
     };
     state.submitted = true;
@@ -299,6 +322,67 @@ function toRadians(degrees) {
 }
 
 function trackRecentlyViewed(state, courtId) {
-  const ids = (state.recentlyViewedIds || []).filter((id) => id !== courtId);
-  state.recentlyViewedIds = [courtId, ...ids].slice(0, 3);
+  state.recentlyViewedIds = rememberRecentCourt(courtId);
+}
+
+async function shareCourt({ state, render }) {
+  const court = state.court;
+  const url = `${window.location.origin}${window.location.pathname}#court/${encodeURIComponent(court.id)}`;
+  const shareData = {
+    title: `${court.name} on Rallie`,
+    text: `Check the latest community court status for ${court.name}.`,
+    url,
+  };
+
+  try {
+    if (navigator.share) {
+      await navigator.share(shareData);
+      showActionMessage({ state, render, message: "Court shared" });
+      return;
+    }
+
+    await copyText(url);
+    showActionMessage({ state, render, message: "Court link copied" });
+  } catch (error) {
+    if (error?.name !== "AbortError") showActionMessage({ state, render, message: "Unable to share this court" });
+  }
+}
+
+async function copyCourtAddress({ target, state, render }) {
+  const address = target.dataset.address || `${state.court.name}, ${state.court.neighborhood}, New York, NY`;
+
+  try {
+    await copyText(address);
+    showActionMessage({ state, render, message: "Address copied" });
+  } catch {
+    showActionMessage({ state, render, message: "Unable to copy the address" });
+  }
+}
+
+function showActionMessage({ state, render, message }) {
+  state.actionMessage = message;
+  render();
+  window.clearTimeout(state.actionMessageTimer);
+  state.actionMessageTimer = window.setTimeout(() => {
+    state.actionMessage = "";
+    render();
+  }, 2400);
+}
+
+async function copyText(value) {
+  if (navigator.clipboard?.writeText) {
+    await navigator.clipboard.writeText(value);
+    return;
+  }
+
+  const textArea = document.createElement("textarea");
+  textArea.value = value;
+  textArea.setAttribute("readonly", "");
+  textArea.style.position = "fixed";
+  textArea.style.opacity = "0";
+  document.body.appendChild(textArea);
+  textArea.select();
+  const copied = document.execCommand("copy");
+  textArea.remove();
+  if (!copied) throw new Error("Copy was not available.");
 }

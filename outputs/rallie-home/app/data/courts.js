@@ -1,5 +1,4 @@
-const FALLBACK_PHONE = "Not available";
-const FALLBACK_SURFACE = "Unknown";
+const FALLBACK_DETAIL = "Not listed";
 
 export async function loadCourts() {
   const response = await fetch("./DPR_Tennis_001.json");
@@ -17,6 +16,7 @@ export function normalizeCourt(rawCourt, index, usedIds) {
   const baseId = slugify(rawCourt.Prop_ID || rawCourt.Name || `court-${index + 1}`);
   const id = uniqueId(baseId, usedIds);
   const total = Math.max(0, Number(rawCourt.Courts) || 0);
+  const coordinates = normalizeUsCoordinates(rawCourt.lat, rawCourt.lon);
 
   return {
     id,
@@ -27,19 +27,40 @@ export function normalizeCourt(rawCourt, index, usedIds) {
     reportName: rawCourt.Name || "Unnamed court",
     neighborhood: rawCourt.Location || "Location unavailable",
     distance: "",
-    status: "LIVE",
+    status: "UNKNOWN",
     queue: 0,
-    open: total,
+    open: null,
     total,
-    surface: rawCourt.Tennis_Type || FALLBACK_SURFACE,
-    type: rawCourt.Indoor_Outdoor || "Unknown",
-    phone: rawCourt.Phone || FALLBACK_PHONE,
+    surface: cleanDetail(rawCourt.Tennis_Type),
+    type: cleanDetail(rawCourt.Indoor_Outdoor),
+    phone: cleanDetail(rawCourt.Phone),
     accessible: rawCourt.Accessible || null,
     info: rawCourt.Info || "",
-    lat: rawCourt.lat || null,
-    lon: rawCourt.lon || null,
+    lat: coordinates.lat,
+    lon: coordinates.lon,
     reports: [],
   };
+}
+
+function normalizeUsCoordinates(rawLat, rawLon) {
+  if (rawLat == null || rawLon == null || rawLat === "" || rawLon === "") {
+    return { lat: null, lon: null };
+  }
+
+  const lat = Number(rawLat);
+  const lon = Number(rawLon);
+  const isPlausibleUsCoordinate =
+    Number.isFinite(lat) && Number.isFinite(lon) &&
+    lat >= 18 && lat <= 72 && lon >= -180 && lon <= -60;
+
+  return isPlausibleUsCoordinate
+    ? { lat: String(rawLat), lon: String(rawLon) }
+    : { lat: null, lon: null };
+}
+
+function cleanDetail(value) {
+  const text = String(value ?? "").trim();
+  return text || FALLBACK_DETAIL;
 }
 
 function uniqueId(baseId, usedIds) {

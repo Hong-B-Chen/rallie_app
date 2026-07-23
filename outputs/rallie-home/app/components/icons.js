@@ -21,6 +21,13 @@ const paths = {
   target: '<circle cx="12" cy="12" r="8" /><circle cx="12" cy="12" r="2" /><path d="M12 2v3" /><path d="M12 19v3" /><path d="M2 12h3" /><path d="M19 12h3" />',
   send: '<path d="m22 2-7 20-4-9-9-4Z" /><path d="M22 2 11 13" />',
   user: '<circle cx="12" cy="8" r="4" /><path d="M4 21c1.8-4 14.2-4 16 0" />',
+  chevron: '<path d="m9 18 6-6-6-6" />',
+  clock: '<circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" />',
+  sparkle: '<path d="m12 3 1.3 4.2L17 9l-3.7 1.8L12 15l-1.3-4.2L7 9l3.7-1.8L12 3Z" /><path d="m19 14 .7 2.3L22 17l-2.3.7L19 20l-.7-2.3L16 17l2.3-.7L19 14Z" />',
+  share: '<circle cx="18" cy="5" r="2" /><circle cx="6" cy="12" r="2" /><circle cx="18" cy="19" r="2" /><path d="m8 11 8-5M8 13l8 5" />',
+  copy: '<rect x="8" y="8" width="11" height="11" rx="2" /><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3" />',
+  directions: '<path d="m12 3 9 9-9 9-9-9 9-9Z" /><path d="M9 15v-2a2 2 0 0 1 2-2h4M13 9l2 2-2 2" />',
+  close: '<path d="m6 6 12 12M18 6 6 18" />',
 };
 
 export function icon(name) {

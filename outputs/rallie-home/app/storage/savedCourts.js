@@ -13,13 +13,21 @@ export function saveCourtId(courtId) {
   const savedCourtIds = getSavedCourtIds();
   const nextSavedCourtIds = savedCourtIds.includes(courtId) ? savedCourtIds : [courtId, ...savedCourtIds];
 
-  localStorage.setItem(SAVED_COURTS_KEY, JSON.stringify(nextSavedCourtIds));
+  writeSavedCourtIds(nextSavedCourtIds);
   return nextSavedCourtIds;
 }
 
 export function removeCourtId(courtId) {
   const nextSavedCourtIds = getSavedCourtIds().filter((savedCourtId) => savedCourtId !== courtId);
 
-  localStorage.setItem(SAVED_COURTS_KEY, JSON.stringify(nextSavedCourtIds));
+  writeSavedCourtIds(nextSavedCourtIds);
   return nextSavedCourtIds;
+}
+
+function writeSavedCourtIds(courtIds) {
+  try {
+    localStorage.setItem(SAVED_COURTS_KEY, JSON.stringify(courtIds));
+  } catch {
+    // Saving remains non-blocking when browser storage is unavailable.
+  }
 }

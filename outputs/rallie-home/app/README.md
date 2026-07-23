@@ -20,4 +20,9 @@ Shared public reports use Supabase. Before report submissions can work:
 4. In Supabase, copy the project URL and anon public key from Project Settings.
 5. Replace the placeholder values in `config/supabaseConfig.js`.
 
+If the project contains the original fake QA reports, run
+`supabase/cleanup_fake_reports_2026_07_22.sql` once in the Supabase SQL
+editor. It deletes only the 13 known test-report IDs and installs the
+open-court/waiting-party consistency constraint.
+
 Never put the Supabase service-role key in frontend code. Only use the anon public key.

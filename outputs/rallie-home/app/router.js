@@ -1,6 +1,7 @@
 import { renderHomePage } from "./pages/home.js";
 import { renderDetailPage } from "./pages/detail.js";
 import { renderReportPage } from "./pages/report.js";
+import { escapeHtml } from "./lib/html.js";
 
 // Screen depth used to determine slide direction
 const SCREEN_DEPTH = { home: 0, detail: 1, report: 2 };
@@ -18,7 +19,10 @@ export function renderApp({ state, courts }) {
   lastScreen = state.screen;
 
   const doRender = () => {
-    root.innerHTML = `<main class="app-shell"><section class="phone">${content}</section></main>`;
+    root.innerHTML = `<main class="app-shell"><section class="phone">${content}
+      ${state.isOffline ? `<div class="offline-banner" role="status">You’re offline · Showing saved information</div>` : ""}
+      ${state.actionMessage ? `<div class="action-toast" role="status" aria-live="polite">${escapeHtml(state.actionMessage)}</div>` : ""}
+    </section></main>`;
   };
 
   // Only animate when navigating between screens
